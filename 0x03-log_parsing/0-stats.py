@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """
-Contains the function that displays
-the stats from the standard input
+Contains the function that displays stats from the standard input
 """
 import re
 import sys
