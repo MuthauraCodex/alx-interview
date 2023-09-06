@@ -5,51 +5,62 @@ of prime numbers.
 """
 
 
-def prime_numbers_between(n):
-    """
-    calculate prime numbers between 1 and n
-
-    Args:
-        n (int): the number to calculate prime numbers up to
-
-    Returns:
-        int: the number of prime numbers between 1 and n
-    """
-    prime_numbers = 0
-
-    for i in range(2, n + 1):
-        is_prime = True
-        for j in range(2, i // 2 + 1):
-            if i % j == 0:
-                is_prime = False
-                break
-        if is_prime:
-            prime_numbers += 1
-    return prime_numbers
-
-
 def isWinner(x, nums):
     """
-    Determines the winner of a game of prime numbers.
+    Determines the winner of a set of prime number removal games.
 
     Args:
-        x (int): the number of rounds to play
-        nums (list): the list of numbers n to play
+        x (int): The number of rounds.
+        nums (list of int): A list of integers where each integer n denotes
+        a set of consecutive integers starting from 1 up to and including n.
 
     Returns:
-        string: the winner of the game (Ben or Maria)
+        str: The name of the player who won the most rounds (either "Ben"
+        or "Maria").
+        None: If the winner cannot be determined.
+
+    Raises:
+        None.
     """
-    if not x or not nums:
+    if x <= 0 or nums is None:
+        return None
+    if x != len(nums):
         return None
     ben = 0
     maria = 0
-    for i in range(x):
-        prime_nums = prime_numbers_between(nums[i])
-        if prime_nums % 2 == 0:
+    a = [1 for x in range(sorted(nums)[-1] + 1)]
+    a[0], a[1] = 0, 0
+    for i in range(2, len(a)):
+        rm_multiples(a, i)
+    for i in nums:
+        if sum(a[0:i + 1]) % 2 == 0:
             ben += 1
         else:
             maria += 1
-    if ben == maria:
-        return None
-    winner = "Ben" if ben > maria else "Maria"
-    return winner
+    if ben > maria:
+        return "Ben"
+    if maria > ben:
+        return "Maria"
+    return None
+
+
+def rm_multiples(ls, x):
+    """
+    Removes multiples of a prime number from an array of possible prime
+    numbers.
+
+    Args:
+        ls (list of int): An array of possible prime numbers.
+        x (int): The prime number to remove multiples of.
+
+    Returns:
+        None.
+
+    Raises:
+        None.
+    """
+    for i in range(2, len(ls)):
+        try:
+            ls[i * x] = 0
+        except (ValueError, IndexError):
+            break
